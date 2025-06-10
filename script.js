@@ -450,7 +450,7 @@ class ClothingInventoryApp {
                 return;
             }
 
-            const imageData = await dbManager.fileToBase64(imageFile, 0.1);
+            const imageData = await dbManager.fileToBase64(imageFile, 0.3);
             
             const item = {
                 description: description,
@@ -513,7 +513,11 @@ class ClothingInventoryApp {
 
             // Only update image if a new one was selected
             if (imageFile) {
-                updateData.imageData = await dbManager.fileToBase64(imageFile, 0.1);
+                updateData.imageData = await dbManager.fileToBase64(imageFile, 0.3
+                                                                   
+                                                                   
+                                                                   
+                                                                   );
             }
 
             await dbManager.updateClothingItem(itemId, updateData);
