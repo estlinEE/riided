@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Inventory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="nav-btn active" data-page="clothes" data-translate="nav.clothes">Clotches</button>
+                <button class="nav-btn" data-page="admin" data-translate="nav.admin">Admin</button>
+            </div>
+            <div class="nav-right">
+                <select id="language-select" class="language-select">
+                    <option value="en">EN</option>
+                    <option value="et">EST</option>
+                </select>
+                <div class="theme-switch">
+                    <button id="theme-toggle-btn" class="theme-toggle-btn" title="Switch Theme">🎨</button>
+                    <div class="theme-dropdown" id="theme-dropdown">
+                        <button class="theme-option" data-theme="light" data-translate="themes.light">Light</button>
+                        <button class="theme-option" data-theme="dark" data-translate="themes.dark">Dark</button>
+                        <button class="theme-option active" data-theme="banana" data-translate="themes.banana">Banana</button>
+                        <button class="theme-option" data-theme="cotton-candy" data-translate="themes.cottonCandy">Cotton Candy</button>
+                        <button class="theme-option" data-theme="light-ocean" data-translate="themes.lightOcean">Light Ocean</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Clothes Page -->
+        <div id="clothes-page" class="page active">
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <h3 data-translate="filters.color">Color</h3>
+                    <div class="color-filters" id="color-filters">
+                        <button class="color-filter active" data-color="all">
+                            <span data-translate="filters.all">All</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 data-translate="filters.type">Type</h3>
+                    <div class="type-filters" id="type-filters">
+                        <button class="type-filter active" data-type="all" data-translate="filters.all">All</button>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 data-translate="filters.home">Home</h3>
+                    <div class="home-filters" id="home-filters">
+                        <button class="home-filter active" data-home="all" data-translate="filters.all">All</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-grid" id="results-grid">
+                    <div class="no-results" id="no-results" style="display: none;">
+                        <p data-translate="results.noItems">No items found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Admin Page -->
+        <div id="admin-page" class="page">
+            <div class="admin-container">
+                <h2 data-translate="admin.title">Admin Panel</h2>
+                
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="upload" data-translate="admin.uploadItem">Upload Item</button>
+                    <button class="tab-btn" data-tab="manage" data-translate="admin.itemManagement">Item Management</button>
+                    <button class="tab-btn" data-tab="edit" data-translate="admin.editItem">Edit Item</button>
+                    <button class="tab-btn" data-tab="stats" data-translate="admin.statistics">Statistics</button>
+                </div>
+
+                <!-- Upload Tab -->
+                <div id="upload-tab" class="tab-content active">
+                    <div class="upload-section">
+                        <h3 data-translate="admin.uploadImage">Upload New Item</h3>
+                        <form id="upload-form" class="upload-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="item-image" data-translate="admin.uploadImage">Upload Image:</label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" id="item-image" accept="image/*" required>
+                                        <div class="file-upload-button" id="file-upload-btn">
+                                            <span class="file-upload-icon">📸</span>
+                                            <span class="file-upload-text">Choose clothing image</span>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview" id="image-preview"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="item-description" data-translate="admin.description">Description:</label>
+                                    <textarea id="item-description" rows="3" required placeholder="Enter item description..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="item-color" data-translate="admin.color">Color:</label>
+                                    <select id="item-color" required>
+                                        <option value="">Select Color</option>
+                                        <option value="red">Red</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="green">Green</option>
+                                        <option value="yellow">Yellow</option>
+                                        <option value="black">Black</option>
+                                        <option value="white">White</option>
+                                        <option value="gray">Gray</option>
+                                        <option value="brown">Brown</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="purple">Purple</option>
+                                        <option value="orange">Orange</option>
+                                        <option value="navy">Navy</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="item-type" data-translate="admin.type">Type:</label>
+                                    <select id="item-type" required>
+                                        <option value="">Select Type</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="item-home" data-translate="admin.home">Home:</label>
+                                    <select id="item-home" required>
+                                        <option value="">Select Home</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-large" data-translate="admin.upload">Upload Item</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Management Tab -->
+                <div id="manage-tab" class="tab-content">
+                    <div class="management-section">
+                        <h3 data-translate="admin.itemManagement">Item Management</h3>
+                        <div class="management-controls">
+                            <button class="btn btn-outline" data-translate="admin.exportData">Export Data</button>
+                            <button class="btn btn-outline" data-translate="admin.importData">Import Data</button>
+                            <input type="file" id="import-file" accept=".json" style="display: none;">
+                        </div>
+                        <div class="items-list" id="admin-items-list">
+                            <!-- Items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Tab -->
+                <div id="edit-tab" class="tab-content">
+                    <div class="edit-section">
+                        <h3 data-translate="admin.editItem">Edit Item</h3>
+                        <form id="edit-form" class="upload-form" style="display: none;">
+                            <input type="hidden" id="edit-item-id">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="edit-item-image" data-translate="admin.uploadImage">Update Image:</label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" id="edit-item-image" accept="image/*">
+                                        <div class="file-upload-button" id="edit-file-upload-btn">
+                                            <span class="file-upload-icon">📸</span>
+                                            <span class="file-upload-text">Choose new image (optional)</span>
+                                        </div>
+                                    </div>
+                                    <div class="current-image-preview" id="current-image-preview"></div>
+                                    <div class="image-preview" id="edit-image-preview"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-item-description" data-translate="admin.description">Description:</label>
+                                    <textarea id="edit-item-description" rows="3" required placeholder="Enter item description..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="edit-item-color" data-translate="admin.color">Color:</label>
+                                    <select id="edit-item-color" required>
+                                        <option value="">Select Color</option>
+                                        <option value="red">Red</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="green">Green</option>
+                                        <option value="yellow">Yellow</option>
+                                        <option value="black">Black</option>
+                                        <option value="white">White</option>
+                                        <option value="gray">Gray</option>
+                                        <option value="brown">Brown</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="purple">Purple</option>
+                                        <option value="orange">Orange</option>
+                                        <option value="navy">Navy</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-item-type" data-translate="admin.type">Type:</label>
+                                    <select id="edit-item-type" required>
+                                        <option value="">Select Type</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-item-home" data-translate="admin.home">Home:</label>
+                                    <select id="edit-item-home" required>
+                                        <option value="">Select Home</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-buttons">
+                                <button type="submit" class="btn btn-primary" data-translate="admin.updateItem">Update Item</button>
+                                <button type="button" class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+                            </div>
+                        </form>
+                        
+                        <div id="edit-instructions" class="edit-instructions">
+                            <p>Select an item from the Item Management tab to edit it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Tab -->
+                <div id="stats-tab" class="tab-content">
+                    <div class="statistics-section">
+                        <h3 data-translate="admin.statistics">Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="total-items">0</div>
+                                <div class="stat-label" data-translate="admin.totalItems">Total Items</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="colors-count">0</div>
+                                <div class="stat-label" data-translate="admin.itemsByColor">Different Colors</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="types-count">0</div>
+                                <div class="stat-label" data-translate="admin.itemsByType">Different Types</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="homes-count">0</div>
+                                <div class="stat-label" data-translate="admin.itemsByHome">Different Homes</div>
+                            </div>
+                        </div>
+                        <div class="charts-section">
+                            <div class="chart-container">
+                                <h4>Items by Color</h4>
+                                <div id="color-chart" class="chart"></div>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Items by Type</h4>
+                                <div id="type-chart" class="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="translations.js"></script>
+    <script src="themes.js"></script>
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
