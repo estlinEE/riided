@@ -342,7 +342,7 @@ class DatabaseManager {
     }
 
     // Utility function to convert file to base64 with compression
-    async fileToBase64(file, quality = 0.3) {
+    async fileToBase64(file, quality = 0.7) {
         return new Promise((resolve, reject) => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
